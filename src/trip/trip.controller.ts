@@ -15,9 +15,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { GetUser } from './../auth/decorator';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @UseGuards(JwtGuard)
 @Controller('trips')
+@ApiBearerAuth()
+@ApiTags('Trips')
 export class TripController {
   constructor(private tripService: TripService) {}
 
