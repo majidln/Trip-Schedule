@@ -144,8 +144,8 @@ describe('App e2e', () => {
             Authorization: 'Bearer $S{userAt}',
           })
           .withBody(dto)
-          .expectStatus(200);
-        // .inspect();
+          .expectStatus(200)
+          .expectBodyContains(dto.name);
       });
     });
   });
