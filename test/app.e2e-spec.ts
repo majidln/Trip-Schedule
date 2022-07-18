@@ -1,3 +1,4 @@
+import { CreateTripDto, EditTripDto } from './../src/trip/dto/trip.dto';
 import { EditUserDto } from './../src/user/dto/user.dto';
 import { AuthDto } from './../src/auth/dto/auth.dto';
 import { PrismaService } from './../src/prisma/prisma.service';
@@ -150,5 +151,94 @@ describe('App e2e', () => {
     });
   });
 
-  // describe('Bookmarks', () => {});
+  describe('Trip', () => {
+    describe('Get empty Trips', () => {
+      it('Should get empty trip', () => {
+        return pactum
+          .spec()
+          .get('/trips')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .expectStatus(200)
+          .expectBody([]);
+      });
+    });
+
+    describe('Create Trip', () => {
+      const trip1: CreateTripDto = {
+        title: 'USA',
+        description: 'summer trip to USA',
+      };
+
+      it('Should create trip', () => {
+        return pactum
+          .spec()
+          .post('/trips')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .withBody(trip1)
+          .expectStatus(201)
+          .stores('tripId', 'id');
+      });
+    });
+
+    describe('Get Trips', () => {
+      it('Should get one trip', () => {
+        return pactum
+          .spec()
+          .get('/trips')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .expectStatus(200)
+          .expectJsonLength(1);
+      });
+    });
+
+    describe('Get One Trips', () => {
+      it('Should get created trip id', () => {
+        return pactum
+          .spec()
+          .get('/trips/{id}')
+          .withPathParams('id', '$S{tripId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .expectStatus(200);
+      });
+    });
+
+    describe('Update Trip', () => {
+      const editedDto: EditTripDto = {
+        description: 'second summer trip to USA',
+      };
+      it('Should edit trip', () => {
+        return pactum
+          .spec()
+          .patch('/trips/{id}')
+          .withPathParams('id', '$S{tripId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .withBody(editedDto)
+          .expectStatus(200)
+          .expectBodyContains(editedDto.description);
+      });
+    });
+
+    describe('Delete Trip', () => {
+      it('Should delete trip', () => {
+        return pactum
+          .spec()
+          .delete('/trips/{id}')
+          .withPathParams('id', '$S{tripId}')
+          .withHeaders({
+            Authorization: 'Bearer $S{userAt}',
+          })
+          .expectStatus(204);
+      });
+    });
+  });
 });

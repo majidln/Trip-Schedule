@@ -22,6 +22,7 @@ model User {
   name String?
 
   bookmarks   Bookmark[]
+  trips   Trip[]
 
   @@map("users")
 }
@@ -40,4 +41,19 @@ model Bookmark {
   user   User   @relation(fields: [userId], references: [id])
   
   @@map("bookmarks")
+}
+
+model Trip {
+  id Int @id @default(autoincrement())
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title String
+  description String?
+
+  userId Int    @unique
+  user   User   @relation(fields: [userId], references: [id])
+  
+  @@map("trips")
 }
