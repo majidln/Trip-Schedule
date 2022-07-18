@@ -8,6 +8,10 @@ import { User } from '@prisma/client';
 export class UserController {
   @Get('me')
   getMe(@GetUser('') user: User) {
-    return user;
+    const words = ['beautiful', 'language', 'pictures', 'comfortable', 'know'];
+    return {
+      ...user,
+      words,
+    };
   }
 }
